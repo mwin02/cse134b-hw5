@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Method Test</title>
+  </head>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Tenor+Sans"
+  />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato" />
+
+  <link href="styles/method.css" rel="stylesheet" />
+  <script type="module">
+    import * as htmlMethods from "./scripts/httpMethods.js";
+    window.addEventListener("DOMContentLoaded", init);
+    function init() {
+      let postBtn = document.getElementById("post-btn");
+      postBtn.addEventListener("click", onPostBtnClick);
+      let getBtn = document.getElementById("get-btn");
+      getBtn.addEventListener("click", onGetBtnClick);
+      let putBtn = document.getElementById("put-btn");
+      putBtn.addEventListener("click", onPutBtnClick);
+      let delBtn = document.getElementById("del-btn");
+      delBtn.addEventListener("click", onDelBtnClick);
+    }
+
+    async function onPostBtnClick() {
+      let data = readInput();
+      let json = await htmlMethods.postRequest(data);
+      processJson(json);
+    }
+    async function onGetBtnClick() {
+      let data = readInput();
+      let json = await htmlMethods.getRequest(data);
+      processJson(json);
+    }
+    async function onPutBtnClick() {
+      let data = readInput();
+      let json = await htmlMethods.putRequest(data);
+      processJson(json);
+    }
+    async function onDelBtnClick() {
+      let data = readInput();
+      let json = await htmlMethods.deleteRequest(data);
+      processJson(json);
+    }
+
+    function processJson(json) {
+      if (!json) {
+        displayError();
+      } else {
+        displayOutput(json);
+      }
+    }
+
+    function displayError() {
+      let output = document.getElementById("response");
+      output.innerHTML = `<p> Sorry, something went wrong with the network. Please try again later`;
+    }
+
+    function readInput() {
+      let idInput = document.getElementById("record-id");
+      let nameInput = document.getElementById("article-name");
+      let bodyInput = document.getElementById("article-body");
+      let data = {
+        id: idInput.value,
+        name: nameInput.value,
+        body: bodyInput.value,
+      };
+      return data;
+    }
+
+    function displayOutput(json) {
+      let output = document.getElementById("response");
+      // output.innerHTML = `<p>Output: ${JSON.stringify(json)}</p>`;
+      let tableHTMLString = `<table><tr><th>Key</th><th>Value</th></tr>`;
+      for (const property in json) {
+        let value = json[property];
+        if (typeof value === "object") {
+          value = formatObject(value);
+        }
+        if (value === "") {
+          value = `<p><i>Empty<i></p>`;
+        }
+        tableHTMLString += `<tr><td>${property}</td><td>${value}</td></tr>`;
+      }
+      tableHTMLString += `</table>`;
+      output.innerHTML = tableHTMLString;
+    }
+
+    function formatObject(object) {
+      if (!object || Object.keys(object).length === 0) {
+        return `<p><i>Empty<i></p>`;
+      }
+      let paraHTMLString = `<p>`;
+      for (const property in object) {
+        paraHTMLString += `${property} : ${object[property]} </br>`;
+      }
+      paraHTMLString += `</p>`;
+      return paraHTMLString;
+    }
+  </script>
+  <body>
+    <section>
+      <h1>Articles</h1>
+      <form>
+        <fieldset>
+          <legend>Record</legend>
+          <label for="record-id">Id:</label>
+          <input type="text" id="record-id" name="id" />
+          <!-- <br /> -->
+          <label for="article-name">Article Name:</label>
+          <input type="text" id="article-name" name="name" />
+          <!-- <br /> -->
+          <label for="article-body">Body:</label>
+          <!-- <br /> -->
+          <textarea id="article-body" name="body" rows="6"> </textarea>
+          <!-- <br /> -->
+          <input hidden type="date" id="date" name="date" />
+        </fieldset>
+        <fieldset id="buttons">
+          <button type="button" id="post-btn">Post Button</button>
+          <button type="button" id="get-btn">Get Button</button>
+          <button type="button" id="put-btn">Put Button</button>
+          <button type="button" id="del-btn">Delete Button</button>
+        </fieldset>
+      </form>
+      <output id="response"></output>
+    </section>
+  </body>
+</html>
