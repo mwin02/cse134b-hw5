@@ -63,10 +63,14 @@
       let idInput = document.getElementById("record-id");
       let nameInput = document.getElementById("article-name");
       let bodyInput = document.getElementById("article-body");
+      let dateInput = document.getElementById("date");
+      dateInput.value = new Date();
+      console.log(dateInput.value);
       let data = {
         id: idInput.value,
         name: nameInput.value,
         body: bodyInput.value,
+        date: dateInput.value,
       };
       return data;
     }
@@ -117,7 +121,7 @@
           <!-- <br /> -->
           <textarea id="article-body" name="body" rows="6"> </textarea>
           <!-- <br /> -->
-          <input hidden type="date" id="date" name="date" />
+          <input hidden id="date" name="date" />
         </fieldset>
         <fieldset id="buttons">
           <button type="button" id="post-btn">Post Button</button>
